@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { AppState, AppStateStatus } from "react-native";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { QueryClient } from "@tanstack/react-query";
@@ -38,9 +39,19 @@ export default function RootLayout() {
     }
   }, [theme, setColorScheme]);
 
-  // Schedule retention notifications on bootstrap launch
+  // Schedule retention notifications on bootstrap launch and app background transition
   useEffect(() => {
     notificationService.scheduleInactiveUserReminder().catch(console.error);
+
+    const subscription = AppState.addEventListener("change", (nextAppState: AppStateStatus) => {
+      if (nextAppState === "background") {
+        notificationService.scheduleInactiveUserReminder().catch(console.error);
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
   }, []);
 
   return (

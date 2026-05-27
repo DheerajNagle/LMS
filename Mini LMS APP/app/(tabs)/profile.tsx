@@ -10,13 +10,15 @@ import { LogOut, Sun, Moon, Wifi, WifiOff, CloudLightning, RefreshCw, Layers, Aw
 import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
 import { useOffline } from "@/hooks/useOffline";
-import { useQuery } from "@tanstack/react-query";
+import { notificationService } from "@/utils/notification-service";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/api/client";
 import { Course } from "@/api/types";
 import { useRouter } from "expo-router";
 
 export default function ProfileScreen() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { user, logout, updateAvatar } = useAuth();
   const { theme, setTheme } = useThemeStore();
   const { isSimulatedOffline, toggleSimulatedOffline } = useNetworkStore();
@@ -70,6 +72,112 @@ export default function ProfileScreen() {
   const handleOfflineSimulationToggle = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     toggleSimulatedOffline();
+  };
+
+  const handleTestInactivityNotification = async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    const hasPermission = await notificationService.requestPermissions();
+    if (!hasPermission) {
+      Alert.alert("Permission Denied", "Notifications permission is required to run tests.");
+      return;
+    }
+    
+    const Notifications = require("expo-notifications");
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Test Inactivity Reminder ⏰",
+        body: "This is a 5-second test of your 24-hour inactivity notification!",
+        sound: true,
+      },
+      trigger: {
+        type: "timeInterval",
+        seconds: 5,
+      } as any,
+    });
+    Alert.alert("Scheduled", "A test inactivity reminder will fire in 5 seconds. Lock your phone or leave the app to see it!");
+  };
+
+  const handleTestMilestoneNotification = async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    await notificationService.scheduleMilestoneNotification("You've bookmarked 5 courses! 🎉");
+  };
+
+  const handleInjectMockCourses = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    queryClient.setQueryData(["courses"], (oldCourses: any) => {
+      const existing = oldCourses || [];
+      const extra: Course[] = [
+        {
+          id: "mock_course_5",
+          title: "Masterclass: Advanced Micro-Animations",
+          subtitle: "Elevate your React Native apps with butter-smooth 60fps animations.",
+          category: "Mobile Development",
+          duration: "5h 15m",
+          level: "Advanced",
+          rating: 4.9,
+          ratingCount: 450,
+          image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&auto=format&fit=crop&q=80",
+          description: "Dive deep into Reanimated 3, layout animations, shared transitions, and gesture handling.",
+          outline: ["1. Reanimated 3 Essentials", "2. Layout Transitions", "3. Shared Element Transitions"],
+          enrolledCount: 1200,
+          webViewUrl: "https://reactnative.dev",
+          instructor: {
+            name: "Jane Animator",
+            role: "Animation Expert",
+            avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80"
+          }
+        },
+        {
+          id: "mock_course_6",
+          title: "Masterclass: Clean Architecture in React Native",
+          subtitle: "Structure your Expo apps for long-term scalability and clean separation of concerns.",
+          category: "Software Engineering",
+          duration: "8h 40m",
+          level: "Intermediate",
+          rating: 4.8,
+          ratingCount: 310,
+          image: "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=800&auto=format&fit=crop&q=80",
+          description: "Learn clean architecture principles, repository pattern, dependency injection, and decoupling components from API/storage layers.",
+          outline: ["1. Clean Architecture Principles", "2. Directory Structure", "3. Repository Pattern"],
+          enrolledCount: 850,
+          webViewUrl: "https://expo.dev",
+          instructor: {
+            name: "Uncle Bob Jr.",
+            role: "Software Architect",
+            avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80"
+          }
+        },
+        {
+          id: "mock_course_7",
+          title: "Masterclass: TailwindCSS for Mobile UI",
+          subtitle: "Build responsive, adaptive, and highly customized modern interfaces with NativeWind.",
+          category: "Product Design",
+          duration: "4h 20m",
+          level: "Beginner",
+          rating: 4.75,
+          ratingCount: 520,
+          image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&auto=format&fit=crop&q=80",
+          description: "Learn Tailwind CSS styling paradigms on native devices. Responsive styling, light/dark modes, custom configurations, and component animations.",
+          outline: ["1. Tailwind paradigms on Mobile", "2. Config custom colors", "3. Light & Dark theme design"],
+          enrolledCount: 1540,
+          webViewUrl: "https://tailwindcss.com",
+          instructor: {
+            name: "Adam Wathan",
+            role: "Tailwind Creator",
+            avatar: "https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=150&auto=format&fit=crop&q=80"
+          }
+        }
+      ];
+
+      const filteredExtra = extra.filter(e => !existing.some((ex: any) => ex.id === e.id));
+      if (filteredExtra.length === 0) {
+        Alert.alert("Already Injected", "3 extra courses have already been injected in your catalog!");
+        return existing;
+      }
+
+      Alert.alert("Success", "3 extra mock courses have been successfully injected! You now have more than 5 courses in Catalog/Search to bookmark and test the milestone notification.");
+      return [...existing, ...filteredExtra];
+    });
   };
 
   const handleUpdateAvatar = async () => {
@@ -380,8 +488,49 @@ export default function ProfileScreen() {
         </View>
       </View>
 
+      {/* Developer Utilities Card */}
+      <View className="px-6 mb-6">
+        <View className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-5 shadow-soft dark:shadow-soft-dark">
+          <View className="flex-row items-center mb-4 pb-3 border-b border-slate-50 dark:border-slate-800">
+            <Award size={18} color="#6366F1" className="mr-2.5" />
+            <Text className="font-extrabold text-slate-900 dark:text-slate-50 text-sm">
+              Developer Testing Utilities
+            </Text>
+          </View>
+
+          <View className="gap-3">
+            <TouchableOpacity
+              onPress={handleTestInactivityNotification}
+              className="bg-brand-500 py-3.5 rounded-2xl items-center active:opacity-90"
+            >
+              <Text className="text-white font-extrabold text-xs uppercase tracking-wider">
+                Test Inactivity Reminder (5s)
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={handleTestMilestoneNotification}
+              className="bg-brand-500 py-3.5 rounded-2xl items-center active:opacity-90"
+            >
+              <Text className="text-white font-extrabold text-xs uppercase tracking-wider">
+                Test 5th Bookmark Milestone
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={handleInjectMockCourses}
+              className="bg-slate-800 dark:bg-slate-700 py-3.5 rounded-2xl items-center active:opacity-90"
+            >
+              <Text className="text-white font-extrabold text-xs uppercase tracking-wider">
+                Inject 3 Extra Mock Courses
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+
       {/* 5. CARD-BASED LOGOUT BUTTON */}
-      <View className="px-6">
+      <View className="px-6 mb-6">
         <TouchableOpacity
           onPress={handleSignOut}
           className="bg-rose-50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/30 py-4.5 rounded-3xl flex-row items-center justify-center shadow-soft"

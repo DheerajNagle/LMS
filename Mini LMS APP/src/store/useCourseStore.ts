@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { zustandStorage } from "./mmkv-storage";
+import { asyncStorageBacking } from "./async-storage";
+import { notificationService } from "@/utils/notification-service";
 
 interface CourseState {
   bookmarkedCourseIds: string[];
@@ -22,6 +23,13 @@ export const useCourseStore = create<CourseState>()(
         const bookmarkedCourseIds = isBookmarked
           ? state.bookmarkedCourseIds.filter((id) => id !== courseId)
           : [...state.bookmarkedCourseIds, courseId];
+
+        if (!isBookmarked && bookmarkedCourseIds.length === 5) {
+          notificationService.scheduleMilestoneNotification(
+            "You've bookmarked 5 courses! 🎉"
+          ).catch(console.error);
+        }
+
         return { bookmarkedCourseIds };
       }),
 
@@ -35,7 +43,7 @@ export const useCourseStore = create<CourseState>()(
     }),
     {
       name: "course-status-store",
-      storage: createJSONStorage(() => zustandStorage),
+      storage: createJSONStorage(() => asyncStorageBacking),
     }
   )
 );

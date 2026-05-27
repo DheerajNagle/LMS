@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { View, Text, TextInput, Pressable, ScrollView } from "react-native";
+import { View, Text, TextInput, Pressable, ScrollView, RefreshControl } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "@/api/client";
 import { useCourseStore } from "@/store/useCourseStore";
@@ -36,7 +36,7 @@ export default function SearchScreen() {
     return () => clearTimeout(timer);
   }, [query]);
 
-  const { data: courses, isLoading } = useQuery({
+  const { data: courses, isLoading, isRefetching, refetch } = useQuery({
     queryKey: ["courses"],
     queryFn: () => apiClient.getCourses(),
     staleTime: 1000 * 60 * 10,
@@ -184,6 +184,13 @@ export default function SearchScreen() {
           contentContainerStyle={{ paddingHorizontal: 24, paddingBottom: 24 }}
           renderItem={renderItem}
           recycleItems
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefetching}
+              onRefresh={refetch}
+              tintColor="#6366F1"
+            />
+          }
           ListEmptyComponent={
             <View className="flex-1 items-center justify-center py-20 px-4">
               <Compass size={32} color="#94A3B8" className="mb-3" />

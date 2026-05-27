@@ -106,6 +106,58 @@ const MOCK_COURSES: Course[] = [
       role: "Framework Architect, Expo",
       avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80",
     }
+  },
+  {
+    id: "5",
+    title: "Mastering Next.js & Edge Functions",
+    subtitle: "Build serverless applications with hybrid page rendering, middleware routing filters, and scalable databases.",
+    category: "Software Engineering",
+    duration: "9h 30m",
+    level: "Intermediate",
+    rating: 4.8,
+    ratingCount: 1420,
+    image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&auto=format&fit=crop&q=80",
+    description: "Learn Next.js App Router inside out. Explore server components, data fetching, mutations, local caching, and edge-native persistence layouts.",
+    outline: [
+      "1. Next.js App Router Foundations",
+      "2. Server Components vs Client Components",
+      "3. Route Handlers & Server Actions",
+      "4. Vercel Edge Middleware Security Controls",
+      "5. Hydrating Databases and Caching"
+    ],
+    enrolledCount: 8900,
+    webViewUrl: "https://nextjs.org",
+    instructor: {
+      name: "Lee Robinson",
+      role: "VP of Developer Experience, Vercel",
+      avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&auto=format&fit=crop&q=80"
+    }
+  },
+  {
+    id: "6",
+    title: "AI Engineering & Large Language Models",
+    subtitle: "Integrate vector embeddings, semantic retrieval indexes, and raw chat completions into production nodes.",
+    category: "Software Engineering",
+    duration: "14h 20m",
+    level: "Advanced",
+    rating: 4.92,
+    ratingCount: 2310,
+    image: "https://images.unsplash.com/photo-1677442136019-21780efad99a?w=800&auto=format&fit=crop&q=80",
+    description: "Construct production-grade cognitive search engines. Master prompt tuning protocols, agent structures, retrieval-augmented pipelines, and token budgeting parameters.",
+    outline: [
+      "1. Core Large Language Model Mechanics",
+      "2. Implementing Semantic Vector Indexes",
+      "3. Context Injection & Retrieval Systems (RAG)",
+      "4. Designing Stateful Agent Frameworks",
+      "5. budget scaling & API latency reduction"
+    ],
+    enrolledCount: 19800,
+    webViewUrl: "https://openai.com",
+    instructor: {
+      name: "Sam Altman",
+      role: "CEO, OpenAI",
+      avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&auto=format&fit=crop&q=80"
+    }
   }
 ];
 
@@ -124,8 +176,8 @@ export const apiClient = {
       console.log("[APIClient] Hydrating catalog from FreeAPI public endpoints...");
       
       const [productsRes, usersRes] = await Promise.all([
-        httpClient.request<{ data: { data: any[] } }>(`${FREE_API_BASE}/public/randomproducts?page=1&limit=4`),
-        httpClient.request<{ data: { data: any[] } }>(`${FREE_API_BASE}/public/randomusers?page=1&limit=4`)
+        httpClient.request<{ data: { data: any[] } }>(`${FREE_API_BASE}/public/randomproducts?page=1&limit=8`),
+        httpClient.request<{ data: { data: any[] } }>(`${FREE_API_BASE}/public/randomusers?page=1&limit=8`)
       ]);
 
       const products = productsRes?.data?.data || [];

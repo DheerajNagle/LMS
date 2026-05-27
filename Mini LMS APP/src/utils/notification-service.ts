@@ -1,32 +1,23 @@
 import { Platform } from "react-native";
-import Constants from "expo-constants";
 
 let Notifications: any = null;
 let isNotificationSupported = false;
 
-// Expo Go SDK 53+ completely removed remote notifications from standard client, causing fatal load crashes on Android.
-// We check if we are in Expo Go and skip loading to bypass native bridge crashes.
-const isExpoGo = Constants.appOwnership === "expo";
-
-if (isExpoGo) {
-  console.log("[NotificationService] Running in standard Expo Go. Disabling expo-notifications to prevent Android SDK 53+ crashes.");
-} else {
-  try {
-    Notifications = require("expo-notifications");
-    Notifications.setNotificationHandler({
-      handleNotification: async () => ({
-        shouldShowAlert: true,
-        shouldPlaySound: true,
-        shouldSetBadge: false,
-        shouldShowBanner: true,
-        shouldShowList: true,
-      }),
-    });
-    isNotificationSupported = true;
-    console.log("[NotificationService] expo-notifications initialized successfully.");
-  } catch (e) {
-    console.log("[NotificationService] expo-notifications failed to initialize. Using fallback stubs.");
-  }
+try {
+  Notifications = require("expo-notifications");
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: false,
+      shouldShowBanner: true,
+      shouldShowList: true,
+    }),
+  });
+  isNotificationSupported = true;
+  console.log("[NotificationService] expo-notifications initialized successfully.");
+} catch (e) {
+  console.log("[NotificationService] expo-notifications failed to initialize. Using fallback stubs.");
 }
 
 const INACTIVE_REMINDER_ID = "inactive_user_reminder";
@@ -70,9 +61,9 @@ export const notificationService = {
   },
 
   // 2. Schedule instant local milestone alerts
-  async scheduleMilestoneNotification(courseTitle: string): Promise<void> {
+  async scheduleMilestoneNotification(message: string): Promise<void> {
     if (!isNotificationSupported) {
-      console.log(`[NotificationService] Stub: scheduleMilestoneNotification for "${courseTitle}" skipped.`);
+      console.log(`[NotificationService] Stub: scheduleMilestoneNotification for "${message}" skipped.`);
       return;
     }
     const hasPermission = await this.requestPermissions();
@@ -81,10 +72,9 @@ export const notificationService = {
     try {
       await Notifications.scheduleNotificationAsync({
         content: {
-          title: "Course Saved! 🚀",
-          body: `"${courseTitle}" is saved to your library. Available off-grid anytime!`,
+          title: "Milestone Reached! 🏆",
+          body: message,
           sound: true,
-          data: { courseTitle },
         },
         trigger: null, // Send immediately
       });

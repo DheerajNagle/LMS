@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { zustandStorage } from "./mmkv-storage";
+import { asyncStorageBacking } from "./async-storage";
 
 export interface OfflineAction {
   id: string;
@@ -48,7 +48,7 @@ export const useOfflineStore = create<OfflineState>()(
     }),
     {
       name: "offline-sync-queue",
-      storage: createJSONStorage(() => zustandStorage),
+      storage: createJSONStorage(() => asyncStorageBacking),
     }
   )
 );

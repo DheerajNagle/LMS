@@ -1,5 +1,5 @@
 import React, { useCallback } from "react";
-import { View, Text } from "react-native";
+import { View, Text, RefreshControl } from "react-native";
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "@/api/client";
 import { useCourseStore } from "@/store/useCourseStore";
@@ -22,7 +22,7 @@ export default function BookmarksScreen() {
   const { bookmarkedCourseIds, toggleBookmark } = useCourseStore();
   const enqueueOfflineAction = useOfflineStore((state) => state.enqueueAction);
 
-  const { data: courses } = useQuery({
+  const { data: courses, isRefetching, refetch } = useQuery({
     queryKey: ["courses"],
     queryFn: () => apiClient.getCourses(),
     staleTime: 1000 * 60 * 10,
@@ -80,6 +80,13 @@ export default function BookmarksScreen() {
         contentContainerStyle={{ paddingHorizontal: 24, paddingBottom: 24 }}
         renderItem={renderItem}
         recycleItems
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefetching}
+            onRefresh={refetch}
+            tintColor="#6366F1"
+          />
+        }
         ListEmptyComponent={
           <EmptyState
             icon={<Bookmark size={24} color="#94A3B8" />}

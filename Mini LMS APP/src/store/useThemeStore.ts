@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { zustandStorage } from "./mmkv-storage";
+import { asyncStorageBacking } from "./async-storage";
 
 type ThemeMode = "light" | "dark" | "system";
 
@@ -17,7 +17,7 @@ export const useThemeStore = create<ThemeState>()(
     }),
     {
       name: "theme-store",
-      storage: createJSONStorage(() => zustandStorage),
+      storage: createJSONStorage(() => asyncStorageBacking),
     }
   )
 );

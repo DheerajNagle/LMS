@@ -29,46 +29,33 @@ export const CourseCard = React.memo(function CourseCard({
     if (onPress) onPress();
   };
 
-  const handleBookmarkPress = (e: any) => {
-    e.stopPropagation(); // Avoid triggering card route
+  const handleBookmarkPress = () => {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     onToggleBookmark(course.id);
   };
 
   return (
-    <Card 
-      onPress={handleCardPress} 
-      className="mb-5 shadow-soft dark:shadow-soft-dark active:opacity-95"
-    >
-      {/* Cover Image & Bookmark Badge */}
-      <View className="relative w-full h-48 overflow-hidden bg-slate-100 dark:bg-slate-800">
-        <Image
-          source={{ uri: course.image }}
-          style={{ width: "100%", height: "100%" }}
-          contentFit="cover"
-          transition={250}
-        />
-        
-        {/* Floating Category Tag */}
-        <View className="absolute top-4 left-4 bg-white/90 dark:bg-slate-900/90 px-3 py-1 rounded-full border border-slate-100/10 shadow-soft">
-          <Text className="text-[10px] font-bold text-slate-800 dark:text-slate-200 uppercase tracking-widest">
-            {course.category}
-          </Text>
-        </View>
-
-        {/* Floating Bookmark Button */}
-        <TouchableOpacity
-          onPress={handleBookmarkPress}
-          activeOpacity={0.8}
-          className="absolute top-4 right-4 w-9 h-9 bg-white/90 dark:bg-slate-900/90 rounded-full items-center justify-center shadow-soft"
-        >
-          <Bookmark
-            size={15}
-            color={isBookmarked ? "#6366F1" : "#94A3B8"}
-            fill={isBookmarked ? "#6366F1" : "transparent"}
+    <View className="relative mb-5">
+      <Card 
+        onPress={handleCardPress} 
+        className="shadow-soft dark:shadow-soft-dark active:opacity-95"
+      >
+        {/* Cover Image & Category Badge */}
+        <View className="relative w-full h-48 overflow-hidden bg-slate-100 dark:bg-slate-800">
+          <Image
+            source={{ uri: course.image }}
+            style={{ width: "100%", height: "100%" }}
+            contentFit="cover"
+            transition={250}
           />
-        </TouchableOpacity>
-      </View>
+          
+          {/* Floating Category Tag */}
+          <View className="absolute top-4 left-4 bg-white/90 dark:bg-slate-900/90 px-3 py-1 rounded-full border border-slate-100/10 shadow-soft">
+            <Text className="text-[10px] font-bold text-slate-800 dark:text-slate-200 uppercase tracking-widest">
+              {course.category}
+            </Text>
+          </View>
+        </View>
 
       {/* Course Info */}
       <Card.Body className="p-5">
@@ -135,6 +122,21 @@ export const CourseCard = React.memo(function CourseCard({
         </View>
 
       </Card.Body>
-    </Card>
+      </Card>
+
+      {/* Floating Bookmark Button - sibling of Card to prevent touch events propagation issue */}
+      <TouchableOpacity
+        onPress={handleBookmarkPress}
+        activeOpacity={0.8}
+        style={{ position: "absolute", top: 16, right: 16, zIndex: 10 }}
+        className="w-9 h-9 bg-white/90 dark:bg-slate-900/90 rounded-full items-center justify-center shadow-soft"
+      >
+        <Bookmark
+          size={15}
+          color={isBookmarked ? "#6366F1" : "#94A3B8"}
+          fill={isBookmarked ? "#6366F1" : "transparent"}
+        />
+      </TouchableOpacity>
+    </View>
   );
 });

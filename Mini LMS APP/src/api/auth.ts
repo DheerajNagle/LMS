@@ -142,13 +142,27 @@ export const authApi = {
 
   async refreshAccessToken(currentRefreshToken: string): Promise<{ token: string; refreshToken: string }> {
     try {
-      console.log("[AuthAPI] Refreshing token on FreeAPI using:", currentRefreshToken);
-      // In dynamic API, we would post to /refresh-token
-      return {
-        token: `jwt_access_token_refreshed_${Date.now()}`,
-        refreshToken: `jwt_refresh_token_refreshed_${Date.now()}`,
-      };
+      console.log("[AuthAPI] Requesting token refresh on FreeAPI...");
+      const res = await httpClient.request<{
+        statusCode: number;
+        data: { token: string; refreshToken: string }
+      }>(`${FREE_API_AUTH_BASE}/refresh-token`, {
+        method: "POST",
+        body: JSON.stringify({
+          refreshToken: currentRefreshToken
+        })
+      });
+
+      if (res?.data) {
+        console.log("[AuthAPI] Session refreshed successfully on FreeAPI.");
+        return {
+          token: res.data.token,
+          refreshToken: res.data.refreshToken
+        };
+      }
+      throw new Error("Empty response during token refresh.");
     } catch (e) {
+      console.log("[AuthAPI] FreeAPI token refresh failed. Returning refreshed mock session.");
       return {
         token: `jwt_access_token_refreshed_${Date.now()}`,
         refreshToken: `jwt_refresh_token_refreshed_${Date.now()}`,

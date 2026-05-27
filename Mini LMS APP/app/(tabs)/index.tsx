@@ -14,7 +14,6 @@ import { CourseCard } from "@/components/ui/CourseCard";
 import CourseCardSkeleton from "@/components/feedback/CourseCardSkeleton";
 import Avatar from "@/components/ui/Avatar";
 import EmptyState from "@/components/feedback/EmptyState";
-import { notificationService } from "@/utils/notification-service";
 import { Course } from "@/api/types";
 import { Image } from "expo-image";
 
@@ -68,16 +67,6 @@ export default function CatalogScreen() {
     toggleBookmark(courseId);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
-    // Only fire the milestone notification when the user reaches exactly 5 bookmarks
-    if (!currentlyBookmarked) {
-      const newBookmarkCount = bookmarkedCourseIds.length + 1;
-      if (newBookmarkCount === 5) {
-        notificationService.scheduleMilestoneNotification(
-          "You've bookmarked 5 courses! 🎉"
-        ).catch(console.error);
-      }
-    }
-
     if (isOnline) {
       apiClient.bookmark(courseId).catch((err) => {
         console.error("Failed to bookmark online:", err);
@@ -86,7 +75,7 @@ export default function CatalogScreen() {
       const actionType = currentlyBookmarked ? "UNBOOKMARK" : "BOOKMARK";
       enqueueOfflineAction(actionType, courseId);
     }
-  }, [bookmarkedCourseIds, courses, isOnline, toggleBookmark, enqueueOfflineAction]);
+  }, [bookmarkedCourseIds, isOnline, toggleBookmark, enqueueOfflineAction]);
 
   // Memoize filtered items list for featured section
   const filteredCourses = useMemo(() => {
@@ -125,11 +114,19 @@ export default function CatalogScreen() {
               Ready to master fine digital alignments today?
             </Text>
           </View>
-          <Avatar
-            source={user?.avatar}
-            name={user?.name || "Student"}
-            size="md"
-          />
+          <TouchableOpacity
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              router.push("/(tabs)/profile");
+            }}
+            activeOpacity={0.8}
+          >
+            <Avatar
+              source={user?.avatar}
+              name={user?.name || "Student"}
+              size="md"
+            />
+          </TouchableOpacity>
         </View>
 
         {/* 2. Interactive Performance Progress Overview Grid */}
@@ -314,7 +311,7 @@ export default function CatalogScreen() {
             />
           ) : (
             <View>
-              {filteredCourses.slice(0, 2).map((item: Course) => {
+              {filteredCourses.map((item: Course) => {
                 const isBookmarked = bookmarkedCourseIds.includes(item.id);
                 return (
                   <Animated.View key={item.id} entering={FadeInDown.duration(400)}>

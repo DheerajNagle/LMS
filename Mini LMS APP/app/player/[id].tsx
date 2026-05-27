@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "@/api/client";
 import { useCourseStore } from "@/store/useCourseStore";
 import { useOffline } from "@/hooks/useOffline";
+import { useAuth } from "@/hooks/useAuth";
 // @ts-ignore – lucide-react-native@0.363 peer compat quirk; all icons resolve at runtime
 import { X, Play, Pause, SkipForward, Maximize, RotateCcw, Volume2, VolumeX, CheckCircle, WifiOff, CloudLightning, Film, BookOpen } from "lucide-react-native";
 import * as Haptics from "expo-haptics";
@@ -223,6 +224,7 @@ export default function PlayerScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { isOnline } = useOffline();
+  const { token } = useAuth();
   
   // Zustand client store
   const { enrolledCourseIds, enrollInCourse } = useCourseStore();
@@ -481,7 +483,13 @@ export default function PlayerScreen() {
       {activeTab === 'webview' ? (
         <WebView
           ref={webviewRef}
-          source={{ html: courseHTML }}
+          source={{
+            html: courseHTML,
+            headers: {
+              "Authorization": `Bearer ${token || ""}`,
+              "X-Course-Id": String(id || "")
+            }
+          }}
           style={{ flex: 1, backgroundColor: '#0F172A' }}
           onMessage={handleWebViewMessage}
           originWhitelist={['*']}
@@ -497,9 +505,19 @@ export default function PlayerScreen() {
               <Text className="text-slate-300 text-sm font-bold mt-4 text-center">
                 Failed to load course content
               </Text>
-              <Text className="text-slate-500 text-xs mt-2 text-center">
+              <Text className="text-slate-500 text-xs mt-2 text-center mb-5">
                 Check your connection and try again.
               </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                  webviewRef.current?.reload();
+                }}
+                className="bg-brand-500 px-5 py-2.5 rounded-xl shadow-soft"
+                activeOpacity={0.8}
+              >
+                <Text className="text-white text-xs font-bold">Reload Content</Text>
+              </TouchableOpacity>
             </View>
           )}
         />

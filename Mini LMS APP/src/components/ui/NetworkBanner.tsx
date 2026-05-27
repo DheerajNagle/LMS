@@ -24,8 +24,6 @@ export default function NetworkBanner() {
     };
   });
 
-  if (isOnline) return null;
-
   return (
     <Animated.View
       style={[animatedStyle]}

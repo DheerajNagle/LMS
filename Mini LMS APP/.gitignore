@@ -1,0 +1,31 @@
+# Dependency directories
+node_modules/
+
+# Expo directories and files
+.expo/
+expo-env.d.ts
+
+# Build and distribution directories
+dist/
+build/
+web-build/
+
+# Local env files
+.env
+.env.local
+.env.*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+tsc_output.txt
+tsc_output_utf8.txt
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Zip files
+*.zip

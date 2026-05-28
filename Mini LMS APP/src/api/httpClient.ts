@@ -62,7 +62,6 @@ export const httpClient = {
     fetchOptions.signal = controller.signal;
 
     try {
-      console.log(`[HTTPClient] Requesting: ${url}`);
       const response = await fetch(url, fetchOptions);
       clearTimeout(id);
 

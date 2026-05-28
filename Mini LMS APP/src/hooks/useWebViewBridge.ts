@@ -29,7 +29,6 @@ export function useWebViewBridge(courseId: string) {
   const handleOnMessage = useCallback((event: any) => {
     try {
       const data: BridgeMessage = JSON.parse(event.nativeEvent.data);
-      console.log(`[WebViewBridge] Message received for course ${courseId}:`, data);
 
       switch (data.type) {
         case "QUIZ_COMPLETED": {
@@ -50,8 +49,6 @@ export function useWebViewBridge(courseId: string) {
           break;
         }
         case "PROGRESS_UPDATE": {
-          const { progress } = data.payload;
-          console.log(`[WebViewBridge] Progress updated: ${progress}%`);
           break;
         }
         default:

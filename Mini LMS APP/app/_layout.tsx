@@ -9,7 +9,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useColorScheme } from "nativewind";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-import "../src/theme/global.css"; // Ensure NativeWind processes this global CSS
+import "@/theme/global.css"; // Ensure NativeWind processes this global CSS
 import { useThemeStore } from "@/store/useThemeStore";
 import NetworkBanner from "@/components/ui/NetworkBanner";
 import { notificationService } from "@/utils/notification-service";

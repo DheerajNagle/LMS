@@ -428,7 +428,7 @@ export default function PlayerScreen() {
         setWebviewMessage(`✅ Module "${msg.payload.title}" marked complete!`);
         setTimeout(() => setWebviewMessage(null), 3000);
       } else if (msg.type === 'WEBVIEW_READY') {
-        console.log('[WebView] Course content loaded for:', msg.payload.courseId);
+        // Ready status
       }
     } catch (e) {
       console.warn('[WebView] Could not parse message:', e);

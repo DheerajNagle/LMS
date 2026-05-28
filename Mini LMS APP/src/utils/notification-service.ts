@@ -15,9 +15,8 @@ try {
     }),
   });
   isNotificationSupported = true;
-  console.log("[NotificationService] expo-notifications initialized successfully.");
 } catch (e) {
-  console.log("[NotificationService] expo-notifications failed to initialize. Using fallback stubs.");
+  // Notification not supported fallback
 }
 
 const INACTIVE_REMINDER_ID = "inactive_user_reminder";
@@ -26,7 +25,6 @@ export const notificationService = {
   // 1. Request user permission bounds
   async requestPermissions(): Promise<boolean> {
     if (!isNotificationSupported) {
-      console.log("[NotificationService] Stub: requestPermissions skipped.");
       return false;
     }
     try {
@@ -63,7 +61,6 @@ export const notificationService = {
   // 2. Schedule instant local milestone alerts
   async scheduleMilestoneNotification(message: string): Promise<void> {
     if (!isNotificationSupported) {
-      console.log(`[NotificationService] Stub: scheduleMilestoneNotification for "${message}" skipped.`);
       return;
     }
     const hasPermission = await this.requestPermissions();
@@ -86,7 +83,6 @@ export const notificationService = {
   // 3. Retention: Schedule inactive reminder 24 hours out
   async scheduleInactiveUserReminder(): Promise<void> {
     if (!isNotificationSupported) {
-      console.log("[NotificationService] Stub: scheduleInactiveUserReminder skipped.");
       return;
     }
     const hasPermission = await this.requestPermissions();
@@ -108,7 +104,6 @@ export const notificationService = {
           seconds: 24 * 60 * 60, // 24 hours later
         } as any,
       });
-      console.log("[NotificationService] Inactive user reminder scheduled successfully.");
     } catch (e) {
       console.error("[NotificationService] Failed to schedule inactive reminder:", e);
     }
@@ -117,7 +112,6 @@ export const notificationService = {
   // 4. Reset triggers
   async cancelAll(): Promise<void> {
     if (!isNotificationSupported) {
-      console.log("[NotificationService] Stub: cancelAll skipped.");
       return;
     }
     try {

@@ -25,9 +25,7 @@ try {
   appStorage = new MMKV({
     id: "mini-lms-zustand-storage",
   });
-  console.log("[Storage] Native C++ MMKV initialized successfully.");
 } catch (e) {
-  console.log("[Storage] MMKV native module not found (standard Expo Go). Falling back to In-Memory storage.");
   appStorage = new MemoryStorage();
 }
 

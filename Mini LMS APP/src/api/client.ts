@@ -168,13 +168,10 @@ const FREE_API_BASE = "https://api.freeapi.app/api/v1";
 export const apiClient = {
   async getCourses(): Promise<Course[]> {
     if (!useNetworkStore.getState().isOnline()) {
-      console.log("[APIClient] Network offline. Grabbing premium local mock catalog.");
       return MOCK_COURSES;
     }
 
     try {
-      console.log("[APIClient] Hydrating catalog from FreeAPI public endpoints...");
-      
       const [productsRes, usersRes] = await Promise.all([
         httpClient.request<{ data: { data: any[] } }>(`${FREE_API_BASE}/public/randomproducts?page=1&limit=8`),
         httpClient.request<{ data: { data: any[] } }>(`${FREE_API_BASE}/public/randomusers?page=1&limit=8`)
@@ -311,18 +308,18 @@ export const apiClient = {
   },
 
   async enroll(courseId: string): Promise<{ success: boolean }> {
-    console.log("[APIClient] Enrolling in course:", courseId);
     if (!useNetworkStore.getState().isOnline()) {
       throw new Error("Enrollment failed. Network is offline.");
     }
+    void courseId;
     return { success: true };
   },
 
   async bookmark(courseId: string): Promise<{ success: boolean }> {
-    console.log("[APIClient] Bookmarking course:", courseId);
     if (!useNetworkStore.getState().isOnline()) {
       throw new Error("Bookmark failed. Network is offline.");
     }
+    void courseId;
     return { success: true };
   }
 };

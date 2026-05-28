@@ -9,14 +9,11 @@ export function useOffline() {
   const isOnline = useNetworkStore((state) => state.isOnline());
   const queue = useOfflineStore((state) => state.queue);
   const dequeueAction = useOfflineStore((state) => state.dequeueAction);
-  const toggleBookmark = useCourseStore((state) => state.toggleBookmark);
   const enrollInCourse = useCourseStore((state) => state.enrollInCourse);
 
   // Unified background queue execution
   const syncOfflineQueue = useCallback(async () => {
     if (queue.length === 0) return;
-    
-    console.log(`[OfflineSync] Processing queue: ${queue.length} actions pending...`);
     
     // We execute them sequentially (FIFO) to preserve order of user intent
     for (const action of queue) {
@@ -24,14 +21,11 @@ export function useOffline() {
         if (action.type === "ENROLL") {
           await apiClient.enroll(action.payload.courseId);
           enrollInCourse(action.payload.courseId);
-          console.log(`[OfflineSync] Enrolled course ${action.payload.courseId} successfully`);
         } else if (action.type === "BOOKMARK") {
           await apiClient.bookmark(action.payload.courseId);
-          console.log(`[OfflineSync] Bookmarked course ${action.payload.courseId} successfully`);
         } else if (action.type === "UNBOOKMARK") {
           // In dynamic API, we'd delete bookmark
           await apiClient.bookmark(action.payload.courseId);
-          console.log(`[OfflineSync] Unbookmarked course ${action.payload.courseId} successfully`);
         }
         
         // Success: pop from queue
@@ -47,7 +41,7 @@ export function useOffline() {
       "Sync Completed",
       "All your offline updates have been successfully synchronized with the cloud."
     );
-  }, [queue, dequeueAction, enrollInCourse, toggleBookmark]);
+  }, [queue, dequeueAction, enrollInCourse]);
 
   // Automatically trigger sync when the app moves from offline back to online
   useEffect(() => {

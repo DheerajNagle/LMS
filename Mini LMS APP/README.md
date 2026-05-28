@@ -273,11 +273,31 @@ Read this highly engaging, professional script while recording your technical as
 
 ---
 
-## 🏆 GitHub Submission Checklist
+## 📸 Screenshots
 
-Before final push, ensure that:
-*   [x] All strict TypeScript flags are set and checking returns clean: `npm run ts:check` returns zero errors.
-*   [x] Clean `.gitignore` is verified, keeping native build caches, `node_modules`, `.expo`, and MMKV test outputs out of version control.
-*   [x] No hardcoded JWT values, passwords, or test API keys exist.
-*   [x] Safe, relative path aliases (`@/*`) are unified across all screen paths.
-*   [x] FlashList estimated item size warnings are completely eliminated.
+### Login Screen
+
+<img width="739" height="1600" alt="51e9129a-48c8-449d-9719-32d2b778dd57" src="https://github.com/user-attachments/assets/91101d4f-3b29-49a5-914b-d7b19360f65c" />
+<img width="739" height="1600" alt="33907271-eee4-467b-88f5-280f10bb7bb1" src="https://github.com/user-attachments/assets/e7c66aad-c73c-4872-b20a-11de49303e56" />
+
+
+### Home Screen
+
+<img width="739" height="1600" alt="0ae80407-c10e-45fb-b8ad-bcca052253b0" src="https://github.com/user-attachments/assets/94310590-81d1-4bcc-982b-76c52d538532" />
+<img width="739" height="1600" alt="5e42f88b-3643-4b88-b721-16c5ef0530cc" src="https://github.com/user-attachments/assets/ff9bb29c-c7e8-40c6-a040-a4718b3d803e" />
+
+
+### Profile Screen
+
+<img width="739" height="1600" alt="5cf79604-5851-4710-889b-a1d5e23afde6" src="https://github.com/user-attachments/assets/c4d9265a-1bca-486b-9d46-c8f8780828b0" />
+<img width="739" height="1600" alt="cdedb424-ff2b-4a17-bf36-76ab69b1993b" src="https://github.com/user-attachments/assets/2da1bfb0-de6d-41c0-a02f-6c6520e10eeb" />
+<img width="739" height="1600" alt="64807c70-fc9e-4b99-a306-4f9cbe33297a" src="https://github.com/user-attachments/assets/ab27f772-cb51-4f69-ac53-10d485d083df" />
+
+
+### Offline Functionality
+
+<img width="739" height="1600" alt="4acb4bea-8723-43a7-8003-6925d43ead11" src="https://github.com/user-attachments/assets/156f19e8-ce76-43f7-b03f-27eba0730cc2" />
+<img width="739" height="1600" alt="065702d9-307e-40a0-a126-6b28615c37a7" src="https://github.com/user-attachments/assets/d7428f0f-1454-4ec4-8e45-76c1b7af03f4" />
+<img width="739" height="1600" alt="8d4e3e56-cc30-49aa-b171-5985c9553ed7" src="https://github.com/user-attachments/assets/1b1cda16-0c79-4fa2-b420-1780b5908a88" />
+
+
